@@ -5,8 +5,10 @@ Implements apriori algorithm efficiently and generates all K+ frequent itemsets 
 
 Requirements:
 Input File :
-transactionDB.txt (27000+ transactions)
-(will be extended later to support different files )
+
+> item1 item2 itemN
+
+Each line should be a transaction with items delimited by a space 
 
 Where each line is a transaction with space seperated items
 
@@ -20,6 +22,7 @@ NOTE:  min_sup is the support value in frequency not percentage
 
 Benchmark:
 
+transactionDB.txt (27000+ transactions)
 with min_sup = 3 and K = anything takes just over 2 minutes to compute  K+ frequent itemsets
 
 
