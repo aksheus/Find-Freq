@@ -27,14 +27,27 @@ namespace FrequentPatternMiner
             int K = int.Parse(args[1]);
             string input_file = args[2];
             string output_file = args[3];
+            int largest_transaction = -1;
+            using (StreamReader sr = File.OpenText(input_file))
+            {
+                while (!sr.EndOfStream)
+                {
+                    List<string> items = new List<string>(sr.ReadLine().Split(new char[] { ' ' })); //get items seperately
+                    if (items.Count > largest_transaction)
+                    {
+                        largest_transaction = items.Count;
+                    }
+                }
+            }
+            largest_transaction += 1;
             // checking input and taking it 
             //#######################################################
-             //####################################################################
+            //####################################################################
             // scan file get support of k item sets and store it
             Dictionary<string, int> itemsetSupportK = new Dictionary<string, int>();
             Dictionary<Tuple<int, int>, List<string>> DataBase = new Dictionary<Tuple<int, int>, List<string>>();
             Dictionary<int, int> theEnd = new Dictionary<int, int>();
-            for (int z = 1; z < 796; z++) // 795 max length for given input file
+            for (int z = 1; z < largest_transaction; z++) // 795 max length for given input file
             {
                 theEnd[z] = 0;
             }
@@ -102,25 +115,7 @@ namespace FrequentPatternMiner
 
                 }
             }
-                // test our new data base 
-                /*        for (int z= 2; z < 796; z++)
-                      {
-                            for (int x = 0; x < theEnd[z]; x++)
-                            {
-                                Tuple<int, int> accessKey = new Tuple<int, int>(z, x);
-                                Console.WriteLine("(,"+z.ToString()+ x.ToString() + ")" + "----->");
-                                if (DataBase.ContainsKey(accessKey))
-                                {
-                                    List<string> hmm = DataBase[accessKey];
-                                    foreach (string j in hmm)
-                                    {
-                                        Console.WriteLine(j);
-                                    }
-                                }
-                                Console.WriteLine("##############################");
-                            }
-                       } */
-                // prune values which don't have minimum support
+                
             HashSet<string> itemsToBeRemoved = new HashSet<string>();
             foreach (KeyValuePair<string, int> kvp in itemsetSupportK)
             {
@@ -167,33 +162,7 @@ namespace FrequentPatternMiner
 
             }
 
-            // frequent 2 itemsets before entering the loop
-            //################################################################
-    /*        HashSet<string> bigLevel = new HashSet<string>();
-            HashSet<string> smallLevel = new HashSet<string>();
-            foreach(string n in itemsetSupportK.Keys)
-            {
-                bigLevel.Add(n);
-            }
-            for(int u = 2; u < 796; u++)
-            {
-                for(int v = 0; v < theEnd[u]; v++)
-                {
-                    Tuple<int, int> accessKey = new Tuple<int, int>(u, v);
-                    if (DataBase.ContainsKey(accessKey))
-                    {
-                        List<string> temp = DataBase[accessKey];
-                        foreach(string z in temp)
-                        {
-                            smallLevel.Add(z);
-                        }
-                    }
-                }
-            }
-            bigLevel.IntersectWith(smallLevel);
-            smallLevel.Clear();
-            smallLevel = null; */
-            //################################################################
+         
              itemsetSupportK.Clear(); // ditch the prev level already outputted
             foreach(KeyValuePair<string,int> kvp in levelTwoItems)
             {
@@ -229,7 +198,7 @@ namespace FrequentPatternMiner
                 {
                     itemsetSupportK[s] = 0; // initialize counts to zero
                 }
-                for (int u = whereAt; u < 796; u++)
+                for (int u = whereAt; u < largest_transaction; u++)
                 {
                     for (int v = 0; v < theEnd[u]; v++)
                     {
